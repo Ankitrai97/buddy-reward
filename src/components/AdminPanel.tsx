@@ -243,6 +243,8 @@ const AdminPanel = () => {
                         <div>
                           <div className="font-medium">{referral.client_name}</div>
                           <div className="text-sm text-muted-foreground">{referral.client_email}</div>
+                          <div className="text-sm text-muted-foreground">{referral.client_phone}</div>
+                          <div className="text-sm text-muted-foreground">{referral.client_address}</div>
                         </div>
                       </TableCell>
                       <TableCell>
