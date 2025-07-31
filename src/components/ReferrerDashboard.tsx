@@ -151,11 +151,13 @@ const ReferrerDashboard = () => {
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-xl">{referral.client_name}</CardTitle>
                       <div className="flex gap-2">
+                        <span>Stage:</span>
                         <Badge className={getStageColor(referral.stage)}>
-                          Stage:{referral.stage}
+                          {referral.stage}
                         </Badge>
+                        <span>Bonus Status:</span>
                         <Badge className={getBonusColor(referral.bonus_status)}>
-                          Bonus Status:{referral.bonus_status}
+                          {referral.bonus_status}
                         </Badge>
                       </div>
                     </div>
