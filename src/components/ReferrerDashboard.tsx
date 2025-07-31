@@ -152,10 +152,10 @@ const ReferrerDashboard = () => {
                       <CardTitle className="text-xl">{referral.client_name}</CardTitle>
                       <div className="flex gap-2">
                         <Badge className={getStageColor(referral.stage)}>
-                          {referral.stage}
+                          Stage:{referral.stage}
                         </Badge>
                         <Badge className={getBonusColor(referral.bonus_status)}>
-                          {referral.bonus_status}
+                          Bonus Status:{referral.bonus_status}
                         </Badge>
                       </div>
                     </div>
