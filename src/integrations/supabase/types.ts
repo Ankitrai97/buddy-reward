@@ -125,6 +125,7 @@ export type Database = {
         | "Site Inspection Done"
         | "Documents Verified"
         | "Solar Installed"
+        | "Referred Connection"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -259,6 +260,7 @@ export const Constants = {
         "Site Inspection Done",
         "Documents Verified",
         "Solar Installed",
+        "Referred Connection",
       ],
     },
   },
