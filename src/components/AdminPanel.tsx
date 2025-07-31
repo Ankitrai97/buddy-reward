@@ -75,7 +75,7 @@ const AdminPanel = () => {
         .from('referrals')
         .select(`
           *,
-          profiles!referrals_user_id_fkey(name)
+          profiles:profiles(user_id, name)
         `)
         .order('created_at', { ascending: false });
 
