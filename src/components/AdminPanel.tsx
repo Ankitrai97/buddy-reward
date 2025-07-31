@@ -70,12 +70,12 @@ const AdminPanel = () => {
         created_at: profile.created_at
       })) || [];
 
-      // Fetch referrals with profiles
+      // Fetch referrals with profiles - correct join syntax
       const { data: referralsData } = await supabase
         .from('referrals')
         .select(`
           *,
-          profiles!inner(name)
+          profiles!referrals_user_id_fkey(name)
         `)
         .order('created_at', { ascending: false });
 
@@ -173,6 +173,7 @@ const AdminPanel = () => {
 
   const getStageColor = (stage: string) => {
     switch (stage) {
+      case 'Referred Connection': return 'bg-purple-100 text-purple-800';
       case 'Client Signed': return 'bg-blue-100 text-blue-800';
       case 'Site Inspection Done': return 'bg-yellow-100 text-yellow-800';
       case 'Documents Verified': return 'bg-orange-100 text-orange-800';
@@ -289,6 +290,7 @@ const AdminPanel = () => {
                                       <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
+                                      <SelectItem value="Referred Connection">Referred Connection</SelectItem>
                                       <SelectItem value="Client Signed">Client Signed</SelectItem>
                                       <SelectItem value="Site Inspection Done">Site Inspection Done</SelectItem>
                                       <SelectItem value="Documents Verified">Documents Verified</SelectItem>
