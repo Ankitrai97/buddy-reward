@@ -163,7 +163,7 @@ const ReferrerDashboard = () => {
                 {referral.bonus_status}
               </Badge>
             </div>
-          </div>
+          </div> </div>
                     <CardDescription>
                       Added on {new Date(referral.created_at).toLocaleDateString()}
                     </CardDescription>
