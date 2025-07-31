@@ -104,6 +104,7 @@ const ReferrerDashboard = () => {
 
   const getStageColor = (stage: string) => {
     switch (stage) {
+      case 'Referred Connection': return 'bg-purple-100 text-purple-800';
       case 'Client Signed': return 'bg-blue-100 text-blue-800';
       case 'Site Inspection Done': return 'bg-yellow-100 text-yellow-800';
       case 'Documents Verified': return 'bg-orange-100 text-orange-800';

@@ -71,13 +71,18 @@ const AdminPanel = () => {
       })) || [];
 
       // Fetch referrals with profiles - correct join syntax
-      const { data: referralsData } = await supabase
+      const { data: referralsData, error: referralsError } = await supabase
         .from('referrals')
         .select(`
           *,
           profiles!referrals_user_id_fkey(name)
         `)
         .order('created_at', { ascending: false });
+
+      if (referralsError) {
+        console.error('Error fetching referrals:', referralsError);
+        throw referralsError;
+      }
 
       const referralsWithUsers = referralsData?.map(referral => ({
         ...referral,

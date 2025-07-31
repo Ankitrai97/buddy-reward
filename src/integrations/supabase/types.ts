@@ -64,7 +64,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
-          stage: Database["public"]["Enums"]["referral_stage"]
+          stage?: Database["public"]["Enums"]["referral_stage"]
           updated_at?: string
           user_id: string
         }
