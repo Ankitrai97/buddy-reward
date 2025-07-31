@@ -367,7 +367,7 @@ const AdminPanel = () => {
                     return (
                       <TableRow key={user.id}>
                         <TableCell className="font-medium">{user.name}</TableCell>
-                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{email}</TableCell>
                         <TableCell>{user.bank_details || 'Not provided'}</TableCell>
                         <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                         <TableCell>
