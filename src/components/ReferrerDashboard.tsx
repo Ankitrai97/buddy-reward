@@ -150,20 +150,21 @@ const ReferrerDashboard = () => {
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-xl">{referral.client_name}</CardTitle>
-                    <div className="flex flex-col items-end gap-1">
-            <div className="flex items-center gap-2">
-              <span>Stage:</span>
-              <Badge className={getStageColor(referral.stage)}>
-                {referral.stage}
-              </Badge>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>Bonus Status:</span>
-              <Badge className={getBonusColor(referral.bonus_status)}>
-                {referral.bonus_status}
-              </Badge>
-            </div>
-          </div> </div>
+                      <div className="flex flex-col items-end gap-1 text-sm font-medium text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                      <span>Stage:</span>
+                      <Badge className={getStageColor(referral.stage)}>
+                      {referral.stage}
+                      </Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                      <span>Bonus Status:</span>
+                      <Badge className={getBonusColor(referral.bonus_status)}>
+                      {referral.bonus_status}
+                      </Badge>
+                      </div>
+                      </div>
+                    </div>
                     <CardDescription>
                       Added on {new Date(referral.created_at).toLocaleDateString()}
                     </CardDescription>
