@@ -21,7 +21,8 @@ export type Database = {
           id: string
           name: string
           updated_at: string
-          user_id: string
+          user_id: string,
+          email: string
         }
         Insert: {
           bank_details?: string | null

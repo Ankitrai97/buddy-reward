@@ -19,6 +19,7 @@ interface User {
   email: string;
   bank_details: string;
   created_at: string;
+  profile_id: string;
 }
 
 interface Referral {
@@ -32,6 +33,7 @@ interface Referral {
   bonus_status: string;
   notes: string;
   created_at: string;
+  profile_id: string;
   profiles: { name: string; email: string };
 }
 
@@ -46,7 +48,8 @@ const AdminPanel = () => {
     client_name: '',
     client_email: '',
     client_phone: '',
-    client_address: ''
+    client_address: '',
+    profile_id: ''
   });
   const [isAdding, setIsAdding] = useState(false);
 
@@ -65,9 +68,10 @@ const AdminPanel = () => {
       const usersWithProfiles = profilesData?.map(profile => ({
         id: profile.user_id,
         name: profile.name,
-        email: '', // We'll populate this from auth
+        email: profile.email,
         bank_details: profile.bank_details || '',
-        created_at: profile.created_at
+        created_at: profile.created_at,
+        profile_id: profile.id
       })) || [];
 
       // Fetch referrals with profiles - correct join syntax
@@ -83,6 +87,8 @@ const AdminPanel = () => {
         console.error('Error fetching referrals:', referralsError);
         throw referralsError;
       }
+
+      console.log("--------------", referralsData)
 
       const referralsWithUsers = referralsData?.map(referral => ({
         ...referral,
@@ -160,7 +166,8 @@ const AdminPanel = () => {
         client_name: '',
         client_email: '',
         client_phone: '',
-        client_address: ''
+        client_address: '',
+        profile_id: ''
       });
 
       fetchData();
@@ -179,7 +186,7 @@ const AdminPanel = () => {
   const getStageColor = (stage: string) => {
     switch (stage) {
       case 'Referred Connection': return 'bg-purple-100 text-purple-800';
-      case 'Client Signed': return 'bg-blue-100 text-blue-800';
+      case 'Client Signed': return 'bg-red-100 text-red-800';
       case 'Site Inspection Done': return 'bg-yellow-100 text-yellow-800';
       case 'Documents Verified': return 'bg-orange-100 text-orange-800';
       case 'Solar Installed': return 'bg-green-100 text-green-800';
@@ -367,7 +374,7 @@ const AdminPanel = () => {
                     return (
                       <TableRow key={user.id}>
                         <TableCell className="font-medium">{user.name}</TableCell>
-                        <TableCell>{users.email}</TableCell>
+                        <TableCell>{user.email}</TableCell>
                         <TableCell>{user.bank_details || 'Not provided'}</TableCell>
                         <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                         <TableCell>
@@ -399,7 +406,7 @@ const AdminPanel = () => {
                   <Label>Select User</Label>
                   <Select
                     value={newReferral.user_id}
-                    onValueChange={(value) => setNewReferral({...newReferral, user_id: value})}
+                    onValueChange={(value) => setNewReferral({...newReferral,profile_id: users.find(u => u.id === value).profile_id ?? '' ,user_id: value})}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Choose a user" />
