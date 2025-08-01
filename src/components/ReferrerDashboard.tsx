@@ -268,9 +268,14 @@ const ReferrerDashboard = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Referrer Dashboard</h1>
-        <Badge variant="outline" className="text-lg px-3 py-1">
-          Total Referrals: {referrals.length}
-        </Badge>
+        <div className="flex flex-col items-end gap-2">
+          <Badge variant="outline" className="text-lg px-3 py-1">
+            Total Referrals: {referrals.length}
+          </Badge>
+          <Badge variant="secondary" className="text-lg px-3 py-1">
+            Bonus Earned: ${referrals.filter(r => r.bonus_status === 'Paid').length * 500}
+          </Badge>
+        </div>
       </div>
 
       <Tabs defaultValue="referrals" className="w-full">
