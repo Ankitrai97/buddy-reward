@@ -16,27 +16,32 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
-          bank_details: string | null
           created_at: string
+          email: string | null
           id: string
           name: string
+          payment_details: Json | null
+          payment_method: string | null
           updated_at: string
-          user_id: string,
-          email: string
+          user_id: string
         }
         Insert: {
-          bank_details?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           name: string
+          payment_details?: Json | null
+          payment_method?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          bank_details?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           name?: string
+          payment_details?: Json | null
+          payment_method?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -52,6 +57,7 @@ export type Database = {
           created_at: string
           id: string
           notes: string | null
+          profile_id: string | null
           stage: Database["public"]["Enums"]["referral_stage"]
           updated_at: string
           user_id: string
@@ -65,6 +71,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          profile_id?: string | null
           stage?: Database["public"]["Enums"]["referral_stage"]
           updated_at?: string
           user_id: string
@@ -78,11 +85,20 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          profile_id?: string | null
           stage?: Database["public"]["Enums"]["referral_stage"]
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "referrals_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

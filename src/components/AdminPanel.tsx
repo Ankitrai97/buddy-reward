@@ -17,7 +17,8 @@ interface User {
   id: string;
   name: string;
   email: string;
-  bank_details: string;
+  payment_method: string;
+  payment_details: any;
   created_at: string;
   profile_id: string;
 }
@@ -69,7 +70,8 @@ const AdminPanel = () => {
         id: profile.user_id,
         name: profile.name,
         email: profile.email,
-        bank_details: profile.bank_details || '',
+        payment_method: profile.payment_method || '',
+        payment_details: profile.payment_details || null,
         created_at: profile.created_at,
         profile_id: profile.id
       })) || [];
@@ -376,7 +378,24 @@ const AdminPanel = () => {
                       <TableRow key={user.id}>
                         <TableCell className="font-medium">{user.name}</TableCell>
                         <TableCell>{user.email}</TableCell>
-                        <TableCell>{user.bank_details || 'Not provided'}</TableCell>
+                        <TableCell>
+                          {user.payment_method && user.payment_details ? (
+                            <div className="space-y-1">
+                              <div className="font-medium">{user.payment_method.replace('_', ' ').toUpperCase()}</div>
+                              {user.payment_method === 'zelle' && (
+                                <div className="text-sm text-muted-foreground">{user.payment_details.email_or_phone}</div>
+                              )}
+                              {user.payment_method === 'paypal' && (
+                                <div className="text-sm text-muted-foreground">{user.payment_details.email}</div>
+                              )}
+                              {user.payment_method === 'bank_transfer' && (
+                                <div className="text-sm text-muted-foreground">
+                                  {user.payment_details.bank_name} - ***{user.payment_details.account_number?.slice(-4)}
+                                </div>
+                              )}
+                            </div>
+                          ) : 'Not provided'}
+                        </TableCell>
                         <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                         <TableCell>
                           <Badge variant="outline">{userReferrals.length}</Badge>

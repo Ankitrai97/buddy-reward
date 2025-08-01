@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
@@ -35,6 +36,9 @@ const ReferrerDashboard = () => {
     client_address: ''
   });
   const [isAdding, setIsAdding] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentDetails, setPaymentDetails] = useState<any>({});
+  const [isSavingPayment, setIsSavingPayment] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -53,6 +57,12 @@ const ReferrerDashboard = () => {
 
       if (error) throw error;
       setUserProfile(data);
+      
+      // Initialize payment details if they exist
+      if (data?.payment_method) {
+        setPaymentMethod(data.payment_method);
+        setPaymentDetails(data.payment_details || {});
+      }
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
@@ -120,6 +130,121 @@ const ReferrerDashboard = () => {
     }
   };
 
+  const handleSavePaymentDetails = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!paymentMethod || !userProfile?.id) return;
+
+    setIsSavingPayment(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          payment_method: paymentMethod,
+          payment_details: paymentDetails
+        })
+        .eq('id', userProfile.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Payment details saved successfully"
+      });
+
+      fetchUserProfile(); // Refresh the profile data
+    } catch (error) {
+      console.error('Error saving payment details:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save payment details",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSavingPayment(false);
+    }
+  };
+
+  const renderPaymentFields = () => {
+    switch (paymentMethod) {
+      case 'zelle':
+        return (
+          <div className="space-y-2">
+            <Label htmlFor="zelle_contact">Zelle Email or Phone Number *</Label>
+            <Input
+              id="zelle_contact"
+              required
+              value={paymentDetails.email_or_phone || ''}
+              onChange={(e) => setPaymentDetails({email_or_phone: e.target.value})}
+              placeholder="Enter email or phone number"
+            />
+          </div>
+        );
+      case 'paypal':
+        return (
+          <div className="space-y-2">
+            <Label htmlFor="paypal_email">PayPal Email Address *</Label>
+            <Input
+              id="paypal_email"
+              type="email"
+              required
+              value={paymentDetails.email || ''}
+              onChange={(e) => setPaymentDetails({email: e.target.value})}
+              placeholder="Enter PayPal email"
+            />
+          </div>
+        );
+      case 'bank_transfer':
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="full_name">Full Name (as per bank account) *</Label>
+              <Input
+                id="full_name"
+                required
+                value={paymentDetails.full_name || ''}
+                onChange={(e) => setPaymentDetails({...paymentDetails, full_name: e.target.value})}
+                placeholder="Enter full name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bank_name">Bank Name *</Label>
+              <Input
+                id="bank_name"
+                required
+                value={paymentDetails.bank_name || ''}
+                onChange={(e) => setPaymentDetails({...paymentDetails, bank_name: e.target.value})}
+                placeholder="Enter bank name"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="account_number">Account Number *</Label>
+                <Input
+                  id="account_number"
+                  required
+                  value={paymentDetails.account_number || ''}
+                  onChange={(e) => setPaymentDetails({...paymentDetails, account_number: e.target.value})}
+                  placeholder="Enter account number"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="routing_number">Routing Number *</Label>
+                <Input
+                  id="routing_number"
+                  required
+                  value={paymentDetails.routing_number || ''}
+                  onChange={(e) => setPaymentDetails({...paymentDetails, routing_number: e.target.value})}
+                  placeholder="Enter routing number"
+                />
+              </div>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   const getStageColor = (stage: string) => {
     switch (stage) {
       case 'Referred Connection': return 'bg-pink-100 text-pink-800';
@@ -152,6 +277,7 @@ const ReferrerDashboard = () => {
         <TabsList>
           <TabsTrigger value="referrals">My Referrals</TabsTrigger>
           <TabsTrigger value="add">Add New Referral</TabsTrigger>
+          <TabsTrigger value="payment">Payment Details</TabsTrigger>
         </TabsList>
 
         <TabsContent value="referrals" className="space-y-4">
@@ -267,6 +393,57 @@ const ReferrerDashboard = () => {
                 <Button type="submit" disabled={isAdding} className="w-full">
                   {isAdding ? 'Adding Referral...' : 'Add Referral'}
                 </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="payment">
+          <Card>
+            <CardHeader>
+              <CardTitle>Payment Details</CardTitle>
+              <CardDescription>
+                Set up your payment details to receive referral bonuses
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSavePaymentDetails} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="payment_method">Payment Method *</Label>
+                  <Select value={paymentMethod} onValueChange={(value) => {
+                    setPaymentMethod(value);
+                    setPaymentDetails({});
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select payment method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="zelle">Zelle</SelectItem>
+                      <SelectItem value="paypal">PayPal</SelectItem>
+                      <SelectItem value="bank_transfer">Bank Transfer (ACH)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {renderPaymentFields()}
+
+                {paymentMethod && (
+                  <Button type="submit" disabled={isSavingPayment} className="w-full">
+                    {isSavingPayment ? 'Saving...' : 'Save Payment Details'}
+                  </Button>
+                )}
+
+                {userProfile?.payment_method && (
+                  <div className="mt-4 p-4 bg-muted rounded-lg">
+                    <h4 className="font-medium mb-2">Current Payment Method:</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {userProfile.payment_method.replace('_', ' ').toUpperCase()} - 
+                      {userProfile.payment_method === 'zelle' && ` ${userProfile.payment_details?.email_or_phone}`}
+                      {userProfile.payment_method === 'paypal' && ` ${userProfile.payment_details?.email}`}
+                      {userProfile.payment_method === 'bank_transfer' && ` ${userProfile.payment_details?.bank_name} (...${userProfile.payment_details?.account_number?.slice(-4)})`}
+                    </p>
+                  </div>
+                )}
               </form>
             </CardContent>
           </Card>
