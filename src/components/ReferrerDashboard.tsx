@@ -27,6 +27,7 @@ const ReferrerDashboard = () => {
   const { user } = useAuth();
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [newReferral, setNewReferral] = useState({
     client_name: '',
     client_email: '',
@@ -37,9 +38,25 @@ const ReferrerDashboard = () => {
 
   useEffect(() => {
     if (user) {
+      fetchUserProfile();
       fetchReferrals();
     }
   }, [user]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (error) throw error;
+      setUserProfile(data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
 
   const fetchReferrals = async () => {
     try {
@@ -72,6 +89,7 @@ const ReferrerDashboard = () => {
         .from('referrals')
         .insert([{
           user_id: user?.id,
+          profile_id: userProfile?.id,
           ...newReferral
         }]);
 

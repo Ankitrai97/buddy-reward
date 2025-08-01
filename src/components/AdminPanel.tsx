@@ -92,6 +92,7 @@ const AdminPanel = () => {
 
       const referralsWithUsers = referralsData?.map(referral => ({
         ...referral,
+        profile_id: (referral as any).profile_id || '',
         profiles: {
           name: (referral.profiles as any)?.name || 'Unknown User',
           email: '' // We'll keep this simple for now
