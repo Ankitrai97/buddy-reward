@@ -109,7 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Check if user already exists (Supabase returns user but no session for existing emails)
     if (data.user && !data.session) {
-      const customError = { message: "You already have an account with this email. Please log in instead." };
+      const customError = { message: "You already have an account with this email. Please sign in instead." };
       toast({
         title: "Account already exists",
         description: customError.message,
