@@ -54,7 +54,7 @@ const Auth = () => {
        <CardHeader className="text-left">
        <CardTitle className="text-3xl font-extrabold text-black flex items-baseline">
         SolarPay Referrals
-       <span className="text-sm text-gray-500 ml-2">by Sunnova</span>
+       <span className="text-sm text-gray-500">by Sunnova</span>
        </CardTitle>
         <CardDescription className="mt-4">
         Sign in to your account or create a new one
