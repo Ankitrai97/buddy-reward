@@ -10,7 +10,7 @@ import { CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ResetPassword = () => {
-  const { user, updatePassword } = useAuth();
+  const { user, updatePassword, signOut } = useAuth();
   const [searchParams] = useSearchParams();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,18 +18,32 @@ const ResetPassword = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  // Check if we have the necessary tokens in URL
-  const hasTokens = searchParams.get('access_token') && searchParams.get('refresh_token');
+  // Check if this is a password reset session (has reset-specific URL params)
+  const isPasswordResetSession = searchParams.get('type') === 'recovery' || 
+                                  searchParams.get('access_token') || 
+                                  searchParams.get('refresh_token');
 
   useEffect(() => {
-    // If no tokens in URL, this is likely an invalid/expired link
-    if (!hasTokens) {
+    // If this looks like a password reset link but user is logged in,
+    // we need to ensure they go through the password reset flow
+    if (isPasswordResetSession && user) {
+      // Don't redirect away - stay on reset page to force password change
+      return;
+    }
+    
+    // If no reset indicators and user is logged in, redirect to main page
+    if (!isPasswordResetSession && user) {
+      // Normal logged-in user without reset context should go to main page
+    }
+    
+    // If no reset indicators at all, show error
+    if (!isPasswordResetSession) {
       setError('Invalid or expired reset link. Please request a new password reset.');
     }
-  }, [hasTokens]);
+  }, [user, isPasswordResetSession]);
 
-  // Always show reset password page when tokens are present, regardless of user state
-  if (user && !hasTokens) {
+  // Only redirect if user is logged in AND this is not a password reset session
+  if (user && !isPasswordResetSession) {
     return <Navigate to="/" replace />;
   }
 
@@ -54,6 +68,7 @@ const ResetPassword = () => {
     if (!result.error) {
       setIsSuccess(true);
       // Sign out the user after password reset so they must log in with new password
+      await signOut();
       setTimeout(() => {
         window.location.href = '/auth';
       }, 3000);
@@ -104,7 +119,7 @@ const ResetPassword = () => {
             </Alert>
           )}
           
-          {!hasTokens ? (
+          {!isPasswordResetSession ? (
             <div className="text-center space-y-4">
               <p className="text-muted-foreground">
                 This reset link is invalid or has expired.
