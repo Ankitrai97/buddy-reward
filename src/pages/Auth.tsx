@@ -52,9 +52,14 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">SolarPay Refferals by Sunnova</CardTitle>
-          <CardDescription>Sign in to your account or create a new one</CardDescription>
-        </CardHeader>
+        <CardTitle className="text-3xl font-extrabold text-black">
+         SolarPay Referrals
+         </CardTitle>
+        <p className="text-sm text-gray-500 mt-1">by Sunnova</p>
+        <CardDescription className="mt-4">
+        Sign in to your account or create a new one
+       </CardDescription>
+       </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">

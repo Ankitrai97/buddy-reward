@@ -30,7 +30,10 @@ const Index = () => {
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">SOLARPAY BY SUNNOVA</h1>
+            <div className="flex flex-col leading-tight">
+          <span className="text-2xl font-extrabold text-black">SolarPay Referrals</span>
+          <span className="text-sm text-gray-500">by Sunnova</span>
+        </div>
             <div className="flex items-center gap-2">
               {userRole === 'admin' ? (
                 <Shield className="h-5 w-5 text-primary" />
