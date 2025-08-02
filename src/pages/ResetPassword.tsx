@@ -28,6 +28,7 @@ const ResetPassword = () => {
     }
   }, [hasTokens]);
 
+  // Always show reset password page when tokens are present, regardless of user state
   if (user && !hasTokens) {
     return <Navigate to="/" replace />;
   }
@@ -52,6 +53,10 @@ const ResetPassword = () => {
     
     if (!result.error) {
       setIsSuccess(true);
+      // Sign out the user after password reset so they must log in with new password
+      setTimeout(() => {
+        window.location.href = '/auth';
+      }, 3000);
     } else {
       setError(result.error.message || 'Failed to update password');
     }
@@ -68,11 +73,11 @@ const ResetPassword = () => {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <CardTitle className="text-2xl font-bold text-green-600">Password Reset Successful</CardTitle>
-            <CardDescription>Your password has been successfully updated</CardDescription>
+            <CardDescription>Your password has been successfully reset. Please log in with your new password.</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
             <p className="text-muted-foreground mb-4">
-              You can now sign in with your new password.
+              You will be redirected to the login page in a few seconds, or you can click the button below.
             </p>
             <Link to="/auth">
               <Button className="w-full">

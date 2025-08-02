@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string, name: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -99,28 +99,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (error) {
-      // Check if it's a duplicate email error
-      if (error.message.includes('already') || error.message.includes('exists') || error.message.includes('registered')) {
-        const customError = { message: "You already have an account with this email. Please log in instead." };
-        toast({
-          title: "Account already exists",
-          description: customError.message,
-          variant: "destructive"
-        });
-        return { error: customError };
-      }
-      
       toast({
         title: "Sign up failed",
         description: error.message,
         variant: "destructive"
       });
-    } else {
-      toast({
-        title: "Check your email",
-        description: "Please check your email for a confirmation link."
-      });
+      return { error };
     }
+
+    // Check if user already exists (Supabase returns user but no session for existing emails)
+    if (data.user && !data.session) {
+      const customError = { message: "You already have an account with this email. Please log in instead." };
+      toast({
+        title: "Account already exists",
+        description: customError.message,
+        variant: "destructive"
+      });
+      return { error: customError };
+    }
+
+    toast({
+      title: "Check your email",
+      description: "Please check your email for a confirmation link."
+    });
 
     return { error };
   };
