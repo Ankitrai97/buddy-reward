@@ -26,29 +26,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Check if this is a password recovery flow
     const urlParams = new URLSearchParams(window.location.search);
-    const isRecoveryFlow = urlParams.get('type') === 'recovery' || 
-                          urlParams.get('access_token') || 
-                          urlParams.get('refresh_token');
+    const isRecoveryFlow = urlParams.get('type') === 'recovery';
+
+    // If this is a recovery flow, handle it immediately
+    if (isRecoveryFlow) {
+      console.log('Recovery flow detected, handling...');
+      
+      // Extract the recovery tokens from URL
+      const accessToken = urlParams.get('access_token');
+      const refreshToken = urlParams.get('refresh_token');
+      
+      if (accessToken && refreshToken) {
+        // Store recovery session for password reset
+        const recoverySession = {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          user: null,
+          expires_at: Date.now() + (15 * 60 * 1000) // 15 minutes
+        };
+        localStorage.setItem('recovery_session', JSON.stringify(recoverySession));
+        console.log('Recovery session stored');
+        
+        // Clear URL parameters and redirect to reset password page
+        window.history.replaceState({}, document.title, '/reset-password');
+        setLoading(false);
+        return;
+      }
+    }
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        // If this is a recovery flow, don't auto-login
-        if (isRecoveryFlow && event === 'SIGNED_IN') {
-          console.log('Intercepting recovery auto-login, redirecting to reset password');
-          // Store the recovery session temporarily
-          localStorage.setItem('recovery_session', JSON.stringify(session));
-          // Sign out immediately to prevent auto-login
-          await supabase.auth.signOut();
-          // Redirect to reset password page
-          window.location.href = '/reset-password' + window.location.search;
-          return;
-        }
-
+      (event, session) => {
+        console.log('Auth state change:', event, session?.user?.id);
+        
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (session?.user && !isRecoveryFlow) {
+        if (session?.user) {
           // Fetch user role
           setTimeout(async () => {
             try {
@@ -72,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    // Only check for existing session if not in recovery flow
+    // Get existing session only if not in recovery flow
     if (!isRecoveryFlow) {
       supabase.auth.getSession().then(({ data: { session } }) => {
         setSession(session);
@@ -99,8 +113,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setLoading(false);
         }
       });
-    } else {
-      setLoading(false);
     }
 
     return () => subscription.unsubscribe();
