@@ -14,135 +14,16 @@ export type Database = {
   }
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          created_at: string
-          email: string | null
-          id: string
-          name: string
-          payment_details: Json | null
-          payment_method: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          id?: string
-          name: string
-          payment_details?: Json | null
-          payment_method?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string
-          payment_details?: Json | null
-          payment_method?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      referrals: {
-        Row: {
-          bonus_status: Database["public"]["Enums"]["bonus_status"]
-          client_address: string | null
-          client_email: string | null
-          client_name: string
-          client_phone: string | null
-          created_at: string
-          id: string
-          notes: string | null
-          profile_id: string | null
-          stage: Database["public"]["Enums"]["referral_stage"]
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          bonus_status?: Database["public"]["Enums"]["bonus_status"]
-          client_address?: string | null
-          client_email?: string | null
-          client_name: string
-          client_phone?: string | null
-          created_at?: string
-          id?: string
-          notes?: string | null
-          profile_id?: string | null
-          stage?: Database["public"]["Enums"]["referral_stage"]
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          bonus_status?: Database["public"]["Enums"]["bonus_status"]
-          client_address?: string | null
-          client_email?: string | null
-          client_name?: string
-          client_phone?: string | null
-          created_at?: string
-          id?: string
-          notes?: string | null
-          profile_id?: string | null
-          stage?: Database["public"]["Enums"]["referral_stage"]
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "referrals_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _user_id: string
-          _role: Database["public"]["Enums"]["app_role"]
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "referrer"
-      bonus_status: "Pending" | "Paid"
-      referral_stage:
-        | "Client Signed"
-        | "Site Inspection Done"
-        | "Documents Verified"
-        | "Solar Installed"
-        | "Referred Connection"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -269,16 +150,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "referrer"],
-      bonus_status: ["Pending", "Paid"],
-      referral_stage: [
-        "Client Signed",
-        "Site Inspection Done",
-        "Documents Verified",
-        "Solar Installed",
-        "Referred Connection",
-      ],
-    },
+    Enums: {},
   },
 } as const
