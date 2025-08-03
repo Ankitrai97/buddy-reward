@@ -24,13 +24,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check if this is a password recovery flow
+    const urlParams = new URLSearchParams(window.location.search);
+    const isRecoveryFlow = urlParams.get('type') === 'recovery' || 
+                          urlParams.get('access_token') || 
+                          urlParams.get('refresh_token');
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        // If this is a recovery flow, don't auto-login
+        if (isRecoveryFlow && event === 'SIGNED_IN') {
+          console.log('Intercepting recovery auto-login, redirecting to reset password');
+          // Store the recovery session temporarily
+          localStorage.setItem('recovery_session', JSON.stringify(session));
+          // Sign out immediately to prevent auto-login
+          await supabase.auth.signOut();
+          // Redirect to reset password page
+          window.location.href = '/reset-password' + window.location.search;
+          return;
+        }
+
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (session?.user) {
+        if (session?.user && !isRecoveryFlow) {
           // Fetch user role
           setTimeout(async () => {
             try {
@@ -54,32 +72,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        // Fetch user role for existing session
-        setTimeout(async () => {
-          try {
-            const { data: roleData } = await supabase
-              .from('user_roles')
-              .select('role')
-              .eq('user_id', session.user.id)
-              .single();
-            
-            setUserRole(roleData?.role || null);
-          } catch (error) {
-            console.error('Error fetching user role:', error);
-          } finally {
-            setLoading(false);
-          }
-        }, 0);
-      } else {
-        setLoading(false);
-      }
-    });
+    // Only check for existing session if not in recovery flow
+    if (!isRecoveryFlow) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Fetch user role for existing session
+          setTimeout(async () => {
+            try {
+              const { data: roleData } = await supabase
+                .from('user_roles')
+                .select('role')
+                .eq('user_id', session.user.id)
+                .single();
+              
+              setUserRole(roleData?.role || null);
+            } catch (error) {
+              console.error('Error fetching user role:', error);
+            } finally {
+              setLoading(false);
+            }
+          }, 0);
+        } else {
+          setLoading(false);
+        }
+      });
+    } else {
+      setLoading(false);
+    }
 
     return () => subscription.unsubscribe();
   }, []);
@@ -172,7 +194,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updatePassword = async (password: string) => {
+    // Try to get recovery session from localStorage first
+    const recoverySessionStr = localStorage.getItem('recovery_session');
+    let recoverySession = null;
+    
+    if (recoverySessionStr) {
+      try {
+        recoverySession = JSON.parse(recoverySessionStr);
+      } catch (e) {
+        console.error('Failed to parse recovery session:', e);
+      }
+    }
+
+    // Use recovery session if available, otherwise current session
+    const sessionToUse = recoverySession || session;
+    
+    if (!sessionToUse?.access_token) {
+      const error = { message: "No valid session found for password reset" };
+      toast({
+        title: "Password update failed",
+        description: error.message,
+        variant: "destructive"
+      });
+      return { error };
+    }
+
+    // Set the session temporarily to perform the password update
+    if (recoverySession) {
+      await supabase.auth.setSession({
+        access_token: recoverySession.access_token,
+        refresh_token: recoverySession.refresh_token
+      });
+    }
+
     const { error } = await supabase.auth.updateUser({ password });
+
+    // Clean up recovery session
+    localStorage.removeItem('recovery_session');
 
     if (error) {
       toast({

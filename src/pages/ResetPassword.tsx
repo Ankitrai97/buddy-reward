@@ -23,27 +23,23 @@ const ResetPassword = () => {
                                   searchParams.get('access_token') || 
                                   searchParams.get('refresh_token');
 
+  // Check if we have a stored recovery session
+  const hasRecoverySession = localStorage.getItem('recovery_session');
+
   useEffect(() => {
-    // If this looks like a password reset link but user is logged in,
-    // we need to ensure they go through the password reset flow
-    if (isPasswordResetSession && user) {
-      // Don't redirect away - stay on reset page to force password change
-      return;
-    }
-    
-    // If no reset indicators and user is logged in, redirect to main page
-    if (!isPasswordResetSession && user) {
-      // Normal logged-in user without reset context should go to main page
-    }
-    
     // If no reset indicators at all, show error
-    if (!isPasswordResetSession) {
+    if (!isPasswordResetSession && !hasRecoverySession) {
       setError('Invalid or expired reset link. Please request a new password reset.');
     }
-  }, [user, isPasswordResetSession]);
+  }, [isPasswordResetSession, hasRecoverySession]);
 
-  // Only redirect if user is logged in AND this is not a password reset session
-  if (user && !isPasswordResetSession) {
+  // Only allow access if we have recovery parameters or stored recovery session
+  if (!isPasswordResetSession && !hasRecoverySession) {
+    // Show error state instead of redirecting
+  }
+
+  // Normal logged-in users without reset context should go to main page
+  if (user && !isPasswordResetSession && !hasRecoverySession) {
     return <Navigate to="/" replace />;
   }
 
@@ -119,7 +115,7 @@ const ResetPassword = () => {
             </Alert>
           )}
           
-          {!isPasswordResetSession ? (
+          {(!isPasswordResetSession && !hasRecoverySession) ? (
             <div className="text-center space-y-4">
               <p className="text-muted-foreground">
                 This reset link is invalid or has expired.
