@@ -141,16 +141,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { error };
     }
 
-    // Check if user already exists (Supabase returns user but no session for existing emails)
-    if (data.user && !data.session) {
-      const customError = { message: "You already have an account with this email. Please sign in instead." };
-      toast({
-        title: "Account already exists",
-        description: customError.message,
-        variant: "destructive"
-      });
-      return { error: customError };
-    }
+    // For new users, Supabase returns a user object but no session until email confirmation
+    // Only show "already exists" error if we get a specific "already registered" error
+    // The presence of a user without session is normal for email confirmation flow
 
     toast({
       title: "Check your email",
