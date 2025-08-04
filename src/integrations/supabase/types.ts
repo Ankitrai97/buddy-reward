@@ -19,7 +19,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
-          name: string | null
+          name: string
           payment_details: Json | null
           payment_method: string | null
           updated_at: string
@@ -29,7 +29,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
-          name?: string | null
+          name: string
           payment_details?: Json | null
           payment_method?: string | null
           updated_at?: string
@@ -39,7 +39,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
-          name?: string | null
+          name?: string
           payment_details?: Json | null
           payment_method?: string | null
           updated_at?: string
@@ -49,44 +49,44 @@ export type Database = {
       }
       referrals: {
         Row: {
-          bonus_status: string
+          bonus_status: Database["public"]["Enums"]["bonus_status"]
           client_address: string | null
-          client_email: string
+          client_email: string | null
           client_name: string
           client_phone: string | null
           created_at: string
           id: string
           notes: string | null
-          profile_id: string
-          stage: string
+          profile_id: string | null
+          stage: Database["public"]["Enums"]["referral_stage"]
           updated_at: string
           user_id: string
         }
         Insert: {
-          bonus_status?: string
+          bonus_status?: Database["public"]["Enums"]["bonus_status"]
           client_address?: string | null
-          client_email: string
+          client_email?: string | null
           client_name: string
           client_phone?: string | null
           created_at?: string
           id?: string
           notes?: string | null
-          profile_id: string
-          stage?: string
+          profile_id?: string | null
+          stage?: Database["public"]["Enums"]["referral_stage"]
           updated_at?: string
           user_id: string
         }
         Update: {
-          bonus_status?: string
+          bonus_status?: Database["public"]["Enums"]["bonus_status"]
           client_address?: string | null
-          client_email?: string
+          client_email?: string | null
           client_name?: string
           client_phone?: string | null
           created_at?: string
           id?: string
           notes?: string | null
-          profile_id?: string
-          stage?: string
+          profile_id?: string | null
+          stage?: Database["public"]["Enums"]["referral_stage"]
           updated_at?: string
           user_id?: string
         }
@@ -110,7 +110,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
@@ -135,7 +135,14 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "referrer"
+      bonus_status: "Pending" | "Paid"
+      referral_stage:
+        | "Client Signed"
+        | "Site Inspection Done"
+        | "Documents Verified"
+        | "Solar Installed"
+        | "Referred Connection"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -263,7 +270,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "referrer"],
+      bonus_status: ["Pending", "Paid"],
+      referral_stage: [
+        "Client Signed",
+        "Site Inspection Done",
+        "Documents Verified",
+        "Solar Installed",
+        "Referred Connection",
+      ],
     },
   },
 } as const
