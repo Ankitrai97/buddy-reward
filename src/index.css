@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,35 +10,52 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Fresh white/light backgrounds */
+    --background: 0 0% 99%;
+    --foreground: 218 100% 15%;
 
+    /* Card backgrounds with subtle warmth */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 218 100% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 218 100% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Navy blue primary - professional and modern */
+    --primary: 218 100% 15%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Light navy for subtle backgrounds */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 218 100% 15%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Soft grays for muted elements */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Green accent for success/highlights */
+    --accent: 142 69% 58%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Gold accent for premium elements */
+    --gold: 45 86% 62%;
+    --gold-foreground: 218 100% 15%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Soft borders and inputs */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 218 100% 15%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    /* Modern radius for soft feel */
+    --radius: 0.75rem;
+    
+    /* Elegant shadows */
+    --shadow-soft: 0 2px 8px -2px hsl(218 100% 15% / 0.08);
+    --shadow-elegant: 0 8px 30px -8px hsl(218 100% 15% / 0.12);
+    --shadow-glow: 0 0 20px hsl(142 69% 58% / 0.15);
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,41 +75,53 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark navy backgrounds */
+    --background: 218 100% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 218 50% 10%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 218 50% 10%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Light primary for dark mode */
+    --primary: 0 0% 98%;
+    --primary-foreground: 218 100% 15%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 218 30% 18%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 218 30% 18%;
+    --muted-foreground: 220 9% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Bright green accent for dark mode */
+    --accent: 142 69% 58%;
+    --accent-foreground: 218 100% 15%;
+    
+    --gold: 45 86% 62%;
+    --gold-foreground: 218 100% 15%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 218 30% 18%;
+    --input: 218 30% 18%;
+    --ring: 142 69% 58%;
+    
+    /* Dark mode shadows */
+    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
+    --shadow-elegant: 0 8px 30px -8px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 20px hsl(142 69% 58% / 0.25);
+    
+    --sidebar-background: 218 50% 10%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 142 69% 58%;
+    --sidebar-primary-foreground: 218 100% 15%;
+    --sidebar-accent: 218 30% 18%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 218 30% 18%;
+    --sidebar-ring: 142 69% 58%;
   }
 }
 
@@ -100,6 +131,57 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-3xl lg:text-4xl;
+  }
+  
+  h2 {
+    @apply text-2xl lg:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl lg:text-2xl;
+  }
+}
+
+@layer components {
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+  
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft;
+  }
+  
+  .btn-accent {
+    @apply bg-accent text-accent-foreground hover:bg-accent/90 shadow-soft;
+  }
+  
+  .btn-gold {
+    @apply bg-gold text-gold-foreground hover:bg-gold/90 shadow-soft;
+  }
+  
+  .card-elevated {
+    @apply bg-card border shadow-elegant rounded-xl;
+  }
+  
+  .text-gradient-primary {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
   }
 }
